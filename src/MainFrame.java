@@ -13,13 +13,14 @@ public class MainFrame extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+//        存留疑问，为什么在这里就不会出现不能的情况了呢？
+        drawingPanel = new DrawingPanel();
         // 创建菜单栏和工具栏
 //        createMenuBar();
         createToolBar();
         // 初始化绘图面板
 //        drawingPanel = DrawingPanel.getInstance();
-        drawingPanel = new DrawingPanel();
+
         add(drawingPanel, BorderLayout.CENTER);
 
 

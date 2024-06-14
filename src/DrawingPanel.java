@@ -22,7 +22,7 @@ public class DrawingPanel extends JPanel {
     private Image image;
     private Graphics2D g2;
     private int x, y, prevX, prevY;
-    private Tool currentTool = Tool.DRAW;
+    private Tool currentTool = Tool.LINE;
     private Color currentColor = Color.BLACK;
 
     public static void setInstance(DrawingPanel instance) {
@@ -251,22 +251,12 @@ public class DrawingPanel extends JPanel {
         repaint();
     }
 
+
     public void setTool(Tool tool) {
-        if (SwingUtilities.isEventDispatchThread()) {
             this.currentTool = tool;
             System.out.println("setTool: tool is " + tool.name());
             System.out.println("setTool: currentTool is " + currentTool.name());
-        } else {
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    this.currentTool = tool;
-                    System.out.println("setTool: tool is " + tool.name());
-                    System.out.println("setTool: currentTool is " + currentTool.name());
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
 

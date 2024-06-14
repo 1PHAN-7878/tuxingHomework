@@ -55,10 +55,10 @@ public class ToolBar extends JToolBar {
     }
 
     private void setToolSafely(DrawingPanel drawingPanel, DrawingPanel.Tool tool) {
-        SwingUtilities.invokeLater(() -> {
+
             drawingPanel.setTool(tool);
             System.out.println("Tool set to: " + tool);
-        });
+
     }
 
     private void chooseColor(DrawingPanel drawingPanel) {
