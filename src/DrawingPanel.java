@@ -15,7 +15,6 @@ public class DrawingPanel extends JPanel {
         return instance;
     }
 
-
     public enum Tool {
         DRAW, ERASE, LINE, CURVE, RECTANGLE, OVAL, TEXT
     }
@@ -24,7 +23,7 @@ public class DrawingPanel extends JPanel {
     private Graphics2D g2;
     private int x, y, prevX, prevY;
     private Tool currentTool = Tool.DRAW;
-    private Color currentColor = Color.BLACK;  // 默认绘图颜色为黑色
+    private Color currentColor = Color.BLACK;
 
     public static void setInstance(DrawingPanel instance) {
         DrawingPanel.instance = instance;
@@ -132,65 +131,31 @@ public class DrawingPanel extends JPanel {
         this.textField = textField;
     }
 
-    private int strokeWidth = 2;  // 默认线条粗细
-    private int startX, startY; // 形状的起始坐标
-    private boolean drawingShape = false; // 是否正在绘制形状
-    private Shape currentShape = null; // 当前正在绘制的形状
-    private JTextField textField; // 用于接收文字输入的文本框
+    private int strokeWidth = 2;
+    private int startX, startY;
+    private boolean drawingShape = false;
+    private Shape currentShape = null;
+    private JTextField textField;
 
     public DrawingPanel() {
         setDoubleBuffered(true);
-//        setFocusable(true); // 让面板可以获取焦点，以便接收键盘事件
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // 获取鼠标点击时的X和Y坐标
                 prevX = e.getX();
                 prevY = e.getY();
-                System.out.println("drawing tool is" + currentTool);
-                // 如果当前工具是线、矩形或椭圆
+//                currentTool = Tool.CURVE;
+                System.out.println("Mouse pressed: drawing tool is " + getCurrentTool().name());
                 if (currentTool == Tool.LINE || currentTool == Tool.RECTANGLE || currentTool == Tool.OVAL) {
-                    // 记录起始点的坐标
                     startX = prevX;
                     startY = prevY;
-                    // 标记开始绘制形状
                     drawingShape = true;
-                }
-//        // 如果当前工具是文本（该部分代码已被注释掉）
-//        else if (currentTool == Tool.TEXT) {
-//            // 在鼠标点击位置创建一个文本输入框
-//            textField = new JTextField(20);
-//            textField.setBounds(prevX, prevY, 200, 20);
-//            textField.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    // 获取文本框中的文本
-//                    String text = textField.getText();
-//                    // 在指定位置绘制文本
-//                    drawText(text, prevX, prevY);
-//                    // 添加文字后移除文本框
-//                    remove(textField);
-//                    textField = null;
-//                    // currentTool = null; // 这行代码被注释掉了，防止工具被重置
-//                }
-//            });
-//            // 将文本框添加到面板中
-//            add(textField);
-//            // 让文本框获得焦点
-//            textField.requestFocus();
-//        }
-                // 如果当前的绘图对象(g2)不为空
-                else if (g2 != null) {
-                    // 如果当前工具是绘图或曲线
+                } else if (g2 != null) {
                     if (currentTool == Tool.DRAW || currentTool == Tool.CURVE) {
-                        // 设置笔划宽度和颜色
                         g2.setStroke(new BasicStroke(strokeWidth));
                         g2.setColor(currentColor);
-                    }
-                    // 如果当前工具是橡皮擦
-                    else if (currentTool == Tool.ERASE) {
-                        // 设置笔划宽度并将颜色设为白色（假设白色是背景色，用于擦除）
+                    } else if (currentTool == Tool.ERASE) {
                         g2.setStroke(new BasicStroke(strokeWidth));
                         g2.setColor(Color.WHITE);
                     }
@@ -199,73 +164,52 @@ public class DrawingPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                // 如果正在绘制形状
                 if (drawingShape) {
-                    // 获取鼠标释放时的X和Y坐标
                     int endX = e.getX();
                     int endY = e.getY();
 
-                    // 设置笔划宽度和颜色
                     g2.setStroke(new BasicStroke(strokeWidth));
                     g2.setColor(currentColor);
 
-                    // 根据当前工具绘制相应的形状
                     if (currentTool == Tool.LINE) {
-                        // 绘制线条
                         g2.drawLine(startX, startY, endX, endY);
                     } else if (currentTool == Tool.RECTANGLE) {
-                        // 绘制矩形
                         g2.drawRect(Math.min(startX, endX), Math.min(startY, endY),
                                 Math.abs(endX - startX), Math.abs(endY - startY));
                     } else if (currentTool == Tool.OVAL) {
-                        // 绘制椭圆
                         g2.drawOval(Math.min(startX, endX), Math.min(startY, endY),
                                 Math.abs(endX - startX), Math.abs(endY - startY));
                     }
 
-                    // 结束绘制形状
                     drawingShape = false;
-
-                    // 重新绘制组件以更新显示
                     repaint();
                 }
             }
 
         });
 
-        // 添加鼠标拖动事件监听器，处理鼠标拖动事件
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                // 获取鼠标拖动时的X和Y坐标
                 x = e.getX();
                 y = e.getY();
 
-                // 如果绘图对象(g2)不为空且不是在绘制形状
                 if (g2 != null && !drawingShape) {
-                    // 绘制从前一个点到当前点的线段
                     g2.drawLine(prevX, prevY, x, y);
-                    // 重新绘制组件以更新显示
                     repaint();
-                    // 更新前一个点的坐标为当前点的坐标
                     prevX = x;
                     prevY = y;
                 }
             }
         });
 
-// 添加键盘事件监听器，处理键盘事件
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                // 如果正在绘制形状
                 if (drawingShape) {
-                    // 获取按下的键的键码
                     int keyCode = e.getKeyCode();
-                    // 当按下回车键时结束绘制形状
                     if (keyCode == KeyEvent.VK_ENTER) {
                         drawingShape = false;
-                        // 重新绘制组件以更新显示
                         repaint();
                     }
                 }
@@ -283,9 +227,7 @@ public class DrawingPanel extends JPanel {
             clear();
         }
         g.drawImage(image, 0, 0, null);
-        System.out.println("drawingShape is " + drawingShape);
-        System.out.println("g2" + g2);
-        // 绘制当前正在绘制的形状（如果存在）
+        System.out.println("Painting: drawingShape is " + drawingShape);
         if (drawingShape && g2 != null) {
             g2.setColor(currentColor);
             if (currentTool == Tool.LINE) {
@@ -300,7 +242,6 @@ public class DrawingPanel extends JPanel {
                 g2.drawOval(Math.min(startX, x), Math.min(startY, y), width, height);
             }
         }
-//        repaint();
     }
 
     public void clear() {
@@ -311,15 +252,23 @@ public class DrawingPanel extends JPanel {
     }
 
     public void setTool(Tool tool) {
-        currentTool = tool;
-        System.out.println("tool is" + tool.name());
-//        if (textField != null) {
-//            remove(textField); // 切换工具时移除文本框
-//            textField = null;
-//            repaint();
-//        }
-//        repaint();
+        if (SwingUtilities.isEventDispatchThread()) {
+            this.currentTool = tool;
+            System.out.println("setTool: tool is " + tool.name());
+            System.out.println("setTool: currentTool is " + currentTool.name());
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    this.currentTool = tool;
+                    System.out.println("setTool: tool is " + tool.name());
+                    System.out.println("setTool: currentTool is " + currentTool.name());
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 
     public void setCurrentColor(Color color) {
         currentColor = color;
@@ -340,6 +289,4 @@ public class DrawingPanel extends JPanel {
             repaint();
         }
     }
-
-
 }
