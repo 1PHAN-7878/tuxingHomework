@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
@@ -16,7 +17,7 @@ public class DrawingPanel extends JPanel {
     }
 
     public enum Tool {
-        DRAW, ERASE, LINE, CURVE, RECTANGLE, OVAL, TEXT
+        DRAW, ERASE, LINE, CURVE, RECTANGLE, OVAL, TEXT, SOLID_OVAL, SOLID_RECTANGLE
     }
 
     private Image image;
@@ -139,7 +140,7 @@ public class DrawingPanel extends JPanel {
 
     public DrawingPanel() {
         setDoubleBuffered(true);
-
+//        setSize(50,50);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -147,7 +148,8 @@ public class DrawingPanel extends JPanel {
                 prevY = e.getY();
 //                currentTool = Tool.CURVE;
                 System.out.println("Mouse pressed: drawing tool is " + getCurrentTool().name());
-                if (currentTool == Tool.LINE || currentTool == Tool.RECTANGLE || currentTool == Tool.OVAL) {
+                if (currentTool == Tool.LINE || currentTool == Tool.RECTANGLE || currentTool == Tool.OVAL
+                        || currentTool == Tool.SOLID_RECTANGLE || currentTool == Tool.SOLID_OVAL) {
                     startX = prevX;
                     startY = prevY;
                     drawingShape = true;
@@ -180,7 +182,14 @@ public class DrawingPanel extends JPanel {
                         g2.drawOval(Math.min(startX, endX), Math.min(startY, endY),
                                 Math.abs(endX - startX), Math.abs(endY - startY));
                     }
-
+                    else if (currentTool == Tool.SOLID_RECTANGLE) {
+                        g2.fillRect(Math.min(startX, x), Math.min(startY, y),
+                                Math.abs(x - startX), Math.abs(y - startY));
+                    }
+                    else if (currentTool == Tool.SOLID_OVAL) {
+                        g2.fillOval(Math.min(startX, x), Math.min(startY, y),
+                                Math.abs(x - startX), Math.abs(y - startY));
+                    }
                     drawingShape = false;
                     repaint();
                 }
@@ -241,6 +250,14 @@ public class DrawingPanel extends JPanel {
                 int height = Math.abs(y - startY);
                 g2.drawOval(Math.min(startX, x), Math.min(startY, y), width, height);
             }
+            else if (currentTool == Tool.SOLID_RECTANGLE) {
+                g2.fillRect(Math.min(startX, x), Math.min(startY, y),
+                        Math.abs(x - startX), Math.abs(y - startY));
+            }
+            else if (currentTool == Tool.SOLID_OVAL) {
+                g2.fillOval(Math.min(startX, x), Math.min(startY, y),
+                        Math.abs(x - startX), Math.abs(y - startY));
+            }
         }
     }
 
@@ -279,4 +296,27 @@ public class DrawingPanel extends JPanel {
             repaint();
         }
     }
+
+    public void translateGraphics(int dx, int dy) {
+        // 保存当前 Graphics2D 对象的状态
+        AffineTransform savedTransform = g2.getTransform();
+
+        // 创建一个新的仿射变换对象，用于平移
+        AffineTransform translateTransform = new AffineTransform();
+        translateTransform.translate(dx, dy);
+
+        // 应用平移变换到 Graphics2D 对象
+        g2.transform(translateTransform);
+
+        // 重新绘制所有图形，这里假设已经在 paintComponent 方法中绘制了各种图形
+        repaint();
+
+        // 恢复原始的 Graphics2D 对象状态
+        g2.setTransform(savedTransform);
+    }
+
+    public void rotateGraphics(double theta){
+        g2.rotate(theta);
+    }
+
 }

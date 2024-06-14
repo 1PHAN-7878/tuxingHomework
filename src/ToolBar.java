@@ -4,6 +4,7 @@ import java.awt.*;
 public class ToolBar extends JToolBar {
 
     public ToolBar(DrawingPanel drawingPanel) {
+//        setBounds(0,0,300,100);
         // 添加绘图工具按钮
         JButton drawButton = new JButton("Draw");
         drawButton.addActionListener(e -> setToolSafely(drawingPanel, DrawingPanel.Tool.DRAW));
@@ -44,6 +45,20 @@ public class ToolBar extends JToolBar {
         colorButton.addActionListener(e -> chooseColor(drawingPanel));
         add(colorButton);
 
+//        //添加填充工具
+//        JButton fillButton = new JButton("Fill");
+//        colorButton.addActionListener(e -> fill(drawingPanel));
+//        add(fillButton);
+        // 添加实心矩形按钮
+        JButton solidRectButton = new JButton("SolidRect");
+        solidRectButton.addActionListener(e -> setToolSafely(drawingPanel, DrawingPanel.Tool.SOLID_RECTANGLE));
+        add(solidRectButton);
+
+        // 添加实心椭圆按钮
+        JButton solidOvalButton = new JButton("SolidOval");
+        solidOvalButton.addActionListener(e -> setToolSafely(drawingPanel, DrawingPanel.Tool.SOLID_OVAL));
+        add(solidOvalButton);
+
         // 添加调节线条粗细的滑动条
         JSlider strokeSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 2);
         strokeSlider.setMajorTickSpacing(1);
@@ -68,4 +83,8 @@ public class ToolBar extends JToolBar {
             drawingPanel.setCurrentColor(chosenColor);
         }
     }
+
+//    private void fill(DrawingPanel drawingPanel){
+//        drawingPanel.fillna();
+//    }
 }
