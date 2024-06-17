@@ -6,7 +6,7 @@ public class MainFrame extends JFrame {
 
 
     private DrawingPanel drawingPanel;
-
+    AddText addText;
     public MainFrame() {
         // 设置主窗口属性
         setTitle("Java Swing Paint Tool");
@@ -19,6 +19,7 @@ public class MainFrame extends JFrame {
         contentPane.setBackground(Color.GRAY);
 //        setSize(800, 600);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        addText = new AddText();
 //        存留疑问，为什么在这里就不会出现不能的情况了呢？
 //        drawingPanel = new DrawingPanel();
         drawingPanel = DrawingPanel.getInstance();
@@ -51,25 +52,47 @@ public class MainFrame extends JFrame {
         //文字子菜单
         JMenuItem addTextItem = new JMenuItem("Add Text");
         addTextItem.addActionListener(e -> {
-            (new AddText()).addTextGo();
+            addText.addTextGo();
         });
 
-
-        JMenu setTextFont = new JMenu("setFontFamily");
+        //字体子菜单更改样式
+        JMenu setTextFontStyle = new JMenu("setFontStyle");
         // 添加字体风格选项
         JMenuItem fontMenuItem1 = new JMenuItem("Plain");
+        fontMenuItem1.addActionListener(e -> {
+            addText.fontStyle = Font.PLAIN;
+        });
         JMenuItem fontMenuItem2 = new JMenuItem("Bold");
+        fontMenuItem2.addActionListener(e -> {
+            addText.fontStyle = Font.BOLD;
+        });
         JMenuItem fontMenuItem3 = new JMenuItem("Italic");
-
+        fontMenuItem3.addActionListener(e -> {
+            addText.fontStyle = Font.ITALIC;
+        });
         JMenuItem fontNameMenuItem1 = new JMenuItem("Arial");
         JMenuItem fontNameMenuItem2 = new JMenuItem("Times New Roman");
         JMenuItem fontNameMenuItem3 = new JMenuItem("Courier New");
 
-        setTextFont.add(fontNameMenuItem1);
-        setTextFont.add(fontNameMenuItem2);
-        setTextFont.add(fontNameMenuItem3);
+        //字体子菜单更改字体
+        JMenuItem setTextFontFamily = new JMenuItem("setFontFamily");
+        //字体选择窗口
+        setTextFontFamily.addActionListener(e -> {
+            addText.setFontFamily();
+        });
 
-        setTextFont.addActionListener(e -> {
+        //字体子菜单更改大小
+        JMenuItem setTextFontSize = new JMenuItem("setFontSize");
+        //字体选择窗口
+        setTextFontSize.addActionListener(e -> {
+            addText.setFontSize();
+        });
+
+        setTextFontStyle.add(fontNameMenuItem1);
+        setTextFontStyle.add(fontNameMenuItem2);
+        setTextFontStyle.add(fontNameMenuItem3);
+
+        setTextFontStyle.addActionListener(e -> {
 
         });
         //新建变换菜单
@@ -91,8 +114,9 @@ public class MainFrame extends JFrame {
 
         //文字
         textMenu.add(addTextItem);
-        textMenu.add(setTextFont);
-
+        textMenu.add(setTextFontStyle);
+        textMenu.add(setTextFontFamily);
+        textMenu.add(setTextFontSize);
         //变换
         transMenu.add(transformItem);
         transMenu.add(rotateItem);

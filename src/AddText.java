@@ -2,12 +2,19 @@ import javax.swing.*;
 
 import java.awt.*;
 public class AddText extends JFrame{
+    //获取当前画布
     DrawingPanel drawingPanel = DrawingPanel.getInstance();
+    //字体族
+    String fontFamily = "Arial";
+    //控制字体大小
+    public int fontSize = 22;
+    //控制字体
+    public int fontStyle = Font.PLAIN;
     public AddText(){
 
     }
-    //控制字体大小
-    private int fontSize;
+
+
 
     public DrawingPanel getDrawingPanel() {
         return drawingPanel;
@@ -25,11 +32,11 @@ public class AddText extends JFrame{
         this.fontSize = fontSize;
     }
 
-    public int getFontFamily() {
+    public String getFontFamily() {
         return fontFamily;
     }
 
-    public void setFontFamily(int fontFamily) {
+    public void setFontFamily(String fontFamily) {
         this.fontFamily = fontFamily;
     }
 
@@ -42,7 +49,6 @@ public class AddText extends JFrame{
     }
 
     //控制字体
-    private int fontFamily;
     //控制斜体
     private boolean isItalic;
     public void addTextGo(){
@@ -83,13 +89,47 @@ public class AddText extends JFrame{
 //            dialog.setLocationRelativeTo(parentFrame);
         dialog.setVisible(true);
     }
+    public void setFontFamily(){
+        JDialog dialog = new JDialog(this, "SetFontFamily", true);
+        dialog.setLayout(new GridLayout(0, 2));
+        JTextField familyField = new JTextField();
+
+        dialog.add(new JLabel("Input FontFamily:"));
+        dialog.add(familyField);
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(e -> {
+            fontFamily = familyField.getText();
+//            System.out.println("Input FontFamily:" + fontFamily);
+            dialog.dispose();
+        });
+        dialog.add(confirmButton);
+        dialog.setSize(400,300);
+        dialog.setVisible(true);
+    }
+    public void setFontSize(){
+        JDialog dialog = new JDialog(this, "SetFontFamily", true);
+        dialog.setLayout(new GridLayout(0, 2));
+        JTextField sizeField = new JTextField();
+
+        dialog.add(new JLabel("Input FontSize:"));
+        dialog.add(sizeField);
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(e -> {
+            fontSize = Integer.parseInt(sizeField.getText());
+//            System.out.println("Input FontFamily:" + fontFamily);
+            dialog.dispose();
+        });
+        dialog.add(confirmButton);
+        dialog.setSize(400,300);
+        dialog.setVisible(true);
+    }
 
     private void drawText(String text, int x, int y, int width, int height){
 
         if (drawingPanel.getG2() != null) {
             System.out.println("writing");
             drawingPanel.getG2().setColor(drawingPanel.getCurrentColor());
-            drawingPanel.getG2().setFont(new Font("Arial", Font.PLAIN, 12)); // 设置字体
+            drawingPanel.getG2().setFont(new Font(fontFamily, fontStyle, fontSize)); // 设置字体
             drawingPanel.getG2().drawString(text, x, y);
 //            drawingPanel.getG2().drawRect(x, y, width, height); // 绘制文本框边框
             repaint();
