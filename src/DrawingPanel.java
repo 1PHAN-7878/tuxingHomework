@@ -1,9 +1,13 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class DrawingPanel extends JPanel {
 
@@ -317,6 +321,27 @@ public class DrawingPanel extends JPanel {
 
     public void rotateGraphics(double theta){
         g2.rotate(theta);
+    }
+    public void saveDrawing() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Drawing");
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            try {
+                // 获取绘制内容的图片
+                Image image = this.createImage(this.getWidth(), this.getHeight());
+                Graphics2D graphics2D = (Graphics2D) image.getGraphics();
+                this.paint(graphics2D);
+
+                // 保存为PNG格式图片
+                ImageIO.write((BufferedImage) image, "PNG", fileToSave);
+                graphics2D.dispose();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
 }

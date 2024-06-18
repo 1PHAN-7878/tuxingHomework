@@ -48,6 +48,8 @@ public class MainFrame extends JFrame {
         newItem.addActionListener(e -> drawingPanel.clear());
         JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(e -> System.exit(0));
+        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem.addActionListener(e -> drawingPanel.saveDrawing());
 
         //文字子菜单
         JMenuItem addTextItem = new JMenuItem("Add Text");
@@ -111,7 +113,7 @@ public class MainFrame extends JFrame {
         //文件
         fileMenu.add(newItem);
         fileMenu.add(exitItem);
-
+        fileMenu.add(saveItem);
         //文字
         textMenu.add(addTextItem);
         textMenu.add(setTextFontStyle);
